@@ -138,7 +138,7 @@ func resourceGitlabRunnerCreate(d *schema.ResourceData, meta interface{}) error 
 	}
 
 	if v, ok := d.GetOk("run_untagged"); ok {
-		options.Locked = gitlab.Bool(v.(bool))
+		options.RunUntagged = gitlab.Bool(v.(bool))
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
