@@ -129,17 +129,12 @@ func resourceGitlabRunnerCreate(d *schema.ResourceData, meta interface{}) error 
 		return fmt.Errorf("Setting 'name' attribute is currently not supported due to https://github.com/xanzy/go-gitlab/issues/1003")
 	}
 
-	if v, ok := d.GetOk("active"); ok {
-		options.Active = gitlab.Bool(v.(bool))
-	}
-
-	if v, ok := d.GetOk("locked"); ok {
-		options.Locked = gitlab.Bool(v.(bool))
-	}
-
-	if v, ok := d.GetOk("run_untagged"); ok {
-		options.RunUntagged = gitlab.Bool(v.(bool))
-	}
+	// Send the booleans that we have defaults for even if they aren't set: this
+	// avoids bugs like https://gitlab.com/gitlab-org/gitlab/-/issues/208749 at
+	// a very minor cost of sightly larger request.
+	options.Active = gitlab.Bool(d.Get("active").(bool))
+	options.Locked = gitlab.Bool(d.Get("locked").(bool))
+	options.RunUntagged = gitlab.Bool(d.Get("run_untagged").(bool))
 
 	if v, ok := d.GetOk("tags"); ok {
 		options.TagList = *stringSetToStringSlice(v.(*schema.Set))
