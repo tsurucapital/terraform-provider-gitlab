@@ -197,6 +197,7 @@ func resourceGitlabRunnerRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("revision", runner.Revision)
 	d.Set("platform", runner.Platform)
 	d.Set("architecture", runner.Architecture)
+	d.Set("run_untagged", runner.RunUntagged)
 	log.Printf("[DEBUG] After setting we have %#v", d)
 	return nil
 }
