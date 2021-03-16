@@ -178,10 +178,13 @@ func resourceGitlabRunnerRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("online", runner.Online)
 	d.Set("status", runner.Status)
 	d.Set("projects", runner.Projects)
-	// TODO: On modern GitLab token is not present so we shouldn't overwrite
-	// what we already had from creation. This may also mean we can't do useful
-	// imports though?
-	d.Set("token", runner.Token)
+	// From GitLab 13.0 onwards, the token is no longer returned when listing
+	// runner details: we only see it on the initial creation. The GitLab API
+	// returns an empty string here in this case. We only set the token
+	// parameter if there is some non-empty value.
+	if runner.Token != "" {
+		d.Set("token", runner.Token)
+	}
 	d.Set("tags", runner.TagList)
 	d.Set("locked", runner.Locked)
 	d.Set("access_level", runner.AccessLevel)
